@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using TestAPI.Models;
 
-namespace TestAPI.Database.Configurations;
+namespace TestAPI.Database.Configuration;
 
 public class UserConfiguration : IEntityTypeConfiguration<User>
 {

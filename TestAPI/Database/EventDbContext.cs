@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TestAPI.Database.Configurations;
+using TestAPI.Database.Configuration;
 using TestAPI.Models;
 
 namespace TestAPI.Database;
@@ -13,14 +13,24 @@ public class EventDbContext : DbContext
 
     public EventDbContext(DbContextOptions<EventDbContext> options) : base(options)
     {
+        Database.EnsureDeleted();
+        Database.EnsureCreated();
 
+        Users.Update(new User() { Login = "Admin", Password = "Admin" });
+        SaveChanges();
+
+        Participants.Update(new Participant() { FirstName = "Anton", UserId = 1, Email = "admin@gmail.com" });
+        SaveChanges();
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
+
         modelBuilder.ApplyConfiguration(new UserConfiguration());
         modelBuilder.ApplyConfiguration(new EventConfiguration());
         modelBuilder.ApplyConfiguration(new ParticipantConfiguration());
+        modelBuilder.ApplyConfiguration(new RoleConfiguration());
 
         modelBuilder
             .Entity<User>()

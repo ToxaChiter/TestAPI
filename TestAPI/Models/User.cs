@@ -1,19 +1,11 @@
-﻿namespace TestAPI.Models;
+﻿using Microsoft.AspNetCore.Identity;
 
-public enum Role
+namespace TestAPI.Models;
+
+public class User : IdentityUser
 {
-    Participant,
-    Admin,
-}
+    public new int Id { get; set; }
 
-
-public class User
-{
-    public int Id { get; set; }
-    public required string Login { get; set; }
-    public required string Password { get; set; }
-    public required Role Role { get; set; }
-
-    public int ParticipantId { get; set; }
+    //public int ParticipantId { get; set; }
     public virtual Participant? Participant { get; set; }
 }

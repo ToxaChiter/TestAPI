@@ -1,17 +1,14 @@
-﻿namespace TestAPI.Models;
+﻿using Microsoft.AspNetCore.Identity;
 
-public class Participant
+namespace TestAPI.Models;
+
+public class Participant : IdentityUser
 {
-    public int Id { get; set; }
     public required string FirstName { get; set; }
     public string? LastName { get; set; }
     public string FullName => $"{FirstName} {LastName}"; // is needed?
     public DateTime? DateOfBirth { get; set; }
-    public string? Email { get; set; }
 
     public virtual List<Event> Events { get; set; } = [];
     public virtual List<ParticipantEvent> ParticipantEvents { get; set; } = [];
-
-    public int UserId { get; set; }
-    public virtual User? User { get; set; }
 }

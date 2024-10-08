@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TestAPI.Models;
 
-namespace TestAPI.Database.Configurations;
+namespace TestAPI.Database.Configuration;
 
 public class ParticipantConfiguration : IEntityTypeConfiguration<Participant>
 {

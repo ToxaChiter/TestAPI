@@ -25,14 +25,21 @@ public class EventRepository : Repository<Event>, IEventRepository
     public async Task<IEnumerable<Event>> GetAllByLocationAsync(string location)
     {
         return await _context.Events
-            .Where(e => e.Location.Equals(location))
+            .Where(e => location.Equals(e.Location))
             .ToListAsync();
     }
 
     public async Task<IEnumerable<Event>> GetAllByCategoryAsync(string category)
     {
         return await _context.Events
-            .Where(e => e.Category.Equals(category))
+            .Where(e => category.Equals(e.Category))
+            .ToListAsync();
+    }
+
+    public async Task<IEnumerable<Event>> GetAllByParticipantAsync(Participant participant)
+    {
+        return await _context.Events
+            .Where(e => e.Participants.Contains(participant))
             .ToListAsync();
     }
 }

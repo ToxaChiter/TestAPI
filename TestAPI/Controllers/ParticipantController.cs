@@ -1,6 +1,12 @@
-﻿using FluentValidation;
+﻿using AutoMapper;
+using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Data.Entity;
+using TestAPI.DTOs;
 using TestAPI.Models;
+using TestAPI.Pagination;
 using TestAPI.Repositories;
 
 namespace TestAPI.Controllers;
@@ -9,41 +15,62 @@ namespace TestAPI.Controllers;
 [Route("[controller]")]
 public class ParticipantController : ControllerBase
 {
-    private readonly IValidator<Participant> _validator;
-    private readonly UnitOfWork _unitOfWork;
+    private readonly IMapper _mapper;
+    private readonly IValidator<ParticipantDTO> _validator;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public ParticipantController(IValidator<Participant> validator, UnitOfWork unitOfWork)
+    public ParticipantController(IMapper mapper, IValidator<ParticipantDTO> validator, IUnitOfWork unitOfWork)
     {
+        _mapper = mapper;
         _validator = validator;
         _unitOfWork = unitOfWork;
     }
 
 
 
-    //[HttpGet]
-    //public IEnumerable<Participant> Get()
-    //{
-    //    return new string[] { "value1", "value2" };
-    //}
+    [HttpGet("GetParticipants")]
+    public async Task<IActionResult> GetAsync([FromQuery] PaginationParams paginationParams)
+    {
+        var participants = await _unitOfWork.Participants.GetAllAsync();
+        var participantsDTO = _mapper.ProjectTo<ParticipantDTO>(participants.AsQueryable());
+        var paginatedParticipantDTO = participantsDTO.Paginate(paginationParams.PageNumber, paginationParams.PageSize);
+        return Ok(paginatedParticipantDTO);
+    }
 
-    //[HttpGet("{id}")]
-    //public Participant Get(int id)
-    //{
-    //    return "value";
-    //}
+    [HttpGet("GetParticipant/{id}")]
+    public async Task<IActionResult> GetByIdAsync(int id)
+    {
+        var participant = await _unitOfWork.Participants.GetByIdAsync(id);
 
-    //[HttpPost]
-    //public void Post([FromBody] ParticipantDTO value)
-    //{
-    //}
+        if (participant is null)
+        {
+            return NotFound();
+        }
 
-    //[HttpPut("{id}")]
-    //public void Put(int id, [FromBody] Participant value)
-    //{
-    //}
+        var participantDTO = _mapper.Map<ParticipantDTO>(participant);
+        return Ok(participantDTO);
+    }
 
-    //[HttpDelete("{id}")]
-    //public void Delete(int id)
+    //[HttpPost("PostParticipant")]
+    //public async Task<IActionResult> PostAsync([FromBody] ParticipantDTO participantDTO)
     //{
+    //    var validationResult = await _validator.ValidateAsync(participantDTO);
+    //    if (!validationResult.IsValid)
+    //    {
+    //        return ValidationProblem();
+    //    }
+    //    var participant = _mapper.Map<Participant>(participantDTO);
+
+    //    var created = await _unitOfWork.Participants.CreateAsync(participant);
+    //    await _unitOfWork.CompleteAsync();
+
+    //    if (created)
+    //    {
+    //        return Created();
+    //    }
+    //    else
+    //    {
+    //        return Problem();
+    //    }
     //}
 }

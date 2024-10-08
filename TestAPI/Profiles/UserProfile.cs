@@ -13,8 +13,6 @@ public class UserProfile : Profile
 
         // Маппинг из UserDTO в User
         CreateMap<UserDTO, User>()
-            .ForMember(dest => dest.Id, opt => opt.Ignore())
-            .ForMember(dest => dest.Role, opt => opt.Ignore())
-            .ForMember(dest => dest.Participant, opt => opt.Ignore());
+            .ForMember(dest => dest.Id, opt => opt.Ignore());
     }
 }

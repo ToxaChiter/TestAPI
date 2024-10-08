@@ -1,8 +1,15 @@
 
 using FluentValidation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using TestAPI.Database;
+using TestAPI.Models;
 using TestAPI.Repositories;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.CodeAnalysis.Options;
 
 namespace TestAPI;
 
@@ -21,13 +28,43 @@ public class Program
             optionsBuilder.UseSqlServer(builder.Configuration["ConnectionStrings:DefaultDBConnection"]);
         });
 
-        builder.Services.AddScoped<UnitOfWork>();
+        builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         builder.Services.AddAutoMapper(typeof(Program));
         builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
-        //builder.Services.AddAuthentication("Bearer").AddJwtBearer();
-        //builder.Services.AddAuthorization();
+        builder.Services.AddIdentity<User, IdentityRole>(options =>
+        {
+            options.Password.RequiredLength = 8;
+            options.Password.RequireDigit = false;
+            options.Password.RequireUppercase = false;
+
+            options.User.RequireUniqueEmail = true;
+        })
+            .AddEntityFrameworkStores<EventDbContext>()
+            .AddDefaultTokenProviders();
+
+        builder.Services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+        .AddJwtBearer(options =>
+        {
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                ValidAudience = builder.Configuration["Jwt:Audience"],
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? "DemoKey"))
+            };
+        });
+
+        builder.Services.AddAuthorizationBuilder()
+            .AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
 
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
@@ -40,7 +77,7 @@ public class Program
             app.UseSwagger();
             app.UseSwaggerUI();
         }
-        
+
         app.UseHttpsRedirection();
 
         app.UseAuthentication();

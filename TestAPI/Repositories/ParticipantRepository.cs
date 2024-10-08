@@ -12,4 +12,11 @@ public class ParticipantRepository : Repository<Participant>, IParticipantReposi
     public ParticipantRepository(EventDbContext context) : base(context)
     {
     }
+
+    public async Task<IEnumerable<Participant>> GetAllFromEventAsync(Event @event)
+    {
+        return await _context.Participants
+            .Where(p => p.Events.Contains(@event))
+            .ToListAsync();
+    }
 }
