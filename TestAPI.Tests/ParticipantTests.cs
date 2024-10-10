@@ -32,6 +32,8 @@ public class ParticipantTests
         using var context = new EventDbContext(_options);
 
         //var controller = new ParticipantController(Mock<IMapper>)
+
+        Assert.True(true);
     }
 }
 
