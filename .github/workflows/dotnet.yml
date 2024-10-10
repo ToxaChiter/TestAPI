@@ -39,7 +39,8 @@ jobs:
         draft: false
         prerelease: false
         generate_release_notes: true
-        token: github.token
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Upload release assets
       uses: actions/upload-release-asset@v1
@@ -48,3 +49,5 @@ jobs:
         asset_path: ./publish
         asset_name: test-api.zip  # Название загружаемого архива
         asset_content_type: application/zip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
