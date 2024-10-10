@@ -10,6 +10,8 @@ using TestAPI.Models;
 using TestAPI.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.CodeAnalysis.Options;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using TestAPI.Middleware;
 
 namespace TestAPI;
 
@@ -38,17 +40,15 @@ public class Program
             options.Password.RequiredLength = 8;
             options.Password.RequireDigit = false;
             options.Password.RequireUppercase = false;
+            options.Password.RequireNonAlphanumeric = false;
 
             options.User.RequireUniqueEmail = true;
         })
+            //.AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<EventDbContext>()
             .AddDefaultTokenProviders();
 
-        builder.Services.AddAuthentication(options =>
-        {
-            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        })
+        builder.Services.AddAuthentication()
         .AddJwtBearer(options =>
         {
             options.TokenValidationParameters = new TokenValidationParameters
@@ -66,6 +66,11 @@ public class Program
         builder.Services.AddAuthorizationBuilder()
             .AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
 
+        builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
+        {
+            options.LoginPath = "/Login";
+        });
+
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
@@ -76,6 +81,13 @@ public class Program
         {
             app.UseSwagger();
             app.UseSwaggerUI();
+        }
+        else
+        {
+            app.UseExceptionHandler("/error");
+            app.UseHsts();
+
+            app.UseMiddleware<ExceptionMiddleware>();
         }
 
         app.UseHttpsRedirection();

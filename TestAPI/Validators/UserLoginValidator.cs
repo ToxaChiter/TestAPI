@@ -1,15 +1,15 @@
 ﻿using FluentValidation;
 using TestAPI.DTOs;
+using TestAPI.Models;
 
 namespace TestAPI.Validators;
 
-public class UserDTOValidator : AbstractValidator<UserDTO>
+public class UserLoginValidator : AbstractValidator<UserLogin>
 {
-    public UserDTOValidator()
+    public UserLoginValidator()
     {
-        RuleFor(user => user.Login)
-            .NotEmpty().WithMessage("Login is required.")
-            .Length(2, 50).WithMessage("Login must be between 2 and 50 characters.");
+        RuleFor(user => user.Email)
+            .EmailAddress();
 
         RuleFor(user => user.Password)
             .NotEmpty().WithMessage("Password is required.")

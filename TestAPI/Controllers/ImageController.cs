@@ -36,7 +36,7 @@ public class ImageController : ControllerBase
         return File(image, "image/jpeg", fileName, new DateTimeOffset(DateTime.UtcNow.AddDays(1)), new EntityTagHeaderValue($"\"{fileName} {lastModifiedTime}\""));
     }
 
-    [HttpPost("UploadImage")]
+    [HttpPut("UploadImage")]
     public async Task<IActionResult> Upload(IFormFile file)
     {
         if (file == null || file.Length == 0)

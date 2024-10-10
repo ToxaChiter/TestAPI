@@ -9,7 +9,7 @@ public class Event
     public required string Location { get; set; }
     public string? Category { get; set; }
     public int? MaxParticipants { get; set; }
-    public string? PicturePath { get; set; }
+    public string? ImagePath { get; set; }
 
     public virtual List<Participant> Participants { get; set; } = [];
     public virtual List<ParticipantEvent> ParticipantEvents { get; set; } = [];

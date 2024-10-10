@@ -26,8 +26,6 @@ public class ParticipantController : ControllerBase
         _unitOfWork = unitOfWork;
     }
 
-
-
     [HttpGet("GetParticipants")]
     public async Task<IActionResult> GetAsync([FromQuery] PaginationParams paginationParams)
     {
@@ -51,26 +49,51 @@ public class ParticipantController : ControllerBase
         return Ok(participantDTO);
     }
 
-    //[HttpPost("PostParticipant")]
-    //public async Task<IActionResult> PostAsync([FromBody] ParticipantDTO participantDTO)
-    //{
-    //    var validationResult = await _validator.ValidateAsync(participantDTO);
-    //    if (!validationResult.IsValid)
-    //    {
-    //        return ValidationProblem();
-    //    }
-    //    var participant = _mapper.Map<Participant>(participantDTO);
+    [HttpPost("RegisterParticipant/{participantId}")]
+    [Authorize]
+    public async Task<IActionResult> RegisterParticipantForEventAsync(int participantId, [FromQuery] int eventId)
+    {
+        var result = await _unitOfWork.RegisterParticipantForEventAsync(participantId, eventId);
 
-    //    var created = await _unitOfWork.Participants.CreateAsync(participant);
-    //    await _unitOfWork.CompleteAsync();
+        if (result is true)
+        {
+            return Ok();
+        }
+        else
+        {
+            return BadRequest();
+        }
+    }
 
-    //    if (created)
-    //    {
-    //        return Created();
-    //    }
-    //    else
-    //    {
-    //        return Problem();
-    //    }
-    //}
+    [HttpPost("CancelParticipant/{participantId}")]
+    [Authorize]
+    public async Task<IActionResult> CancelParticipantFromEventAsync(int participantId, [FromQuery] int eventId)
+    {
+        var result = await _unitOfWork.CancelParticipantFromEventAsync(participantId, eventId);
+
+        if (result is true)
+        {
+            return Ok();
+        }
+        else
+        {
+            return BadRequest();
+        }
+    }
+
+    [HttpGet("GetRegistrationTime/{participantId}")]
+    [Authorize]
+    public async Task<IActionResult> GetRegistrationTimeAsync(int participantId, [FromQuery] int eventId)
+    {
+        var dateTime = await _unitOfWork.GetRegistrationTimeAsync(participantId, eventId);
+
+        if (dateTime is null)
+        {
+            return BadRequest();
+        }
+        else
+        {
+            return Ok(dateTime);
+        }
+    }
 }

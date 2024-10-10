@@ -11,5 +11,5 @@ public class EventDTO
     public string Location { get; set; }
     public string Category { get; set; }
     public int MaxParticipants { get; set; }
-    public string PicturePath { get; set; }
+    public string ImagePath { get; set; }
 }

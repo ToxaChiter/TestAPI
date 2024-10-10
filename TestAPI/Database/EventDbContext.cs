@@ -1,33 +1,28 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using TestAPI.Database.Configuration;
 using TestAPI.Models;
 
 namespace TestAPI.Database;
 
-public class EventDbContext : DbContext
+public class EventDbContext : IdentityDbContext
 { 
     public DbSet<Participant> Participants => Set<Participant>();
     public DbSet<Event> Events => Set<Event>();
-    public DbSet<User> Users => Set<User>();
     public DbSet<ParticipantEvent> ParticipantEvents => Set<ParticipantEvent>();
 
     public EventDbContext(DbContextOptions<EventDbContext> options) : base(options)
     {
-        Database.EnsureDeleted();
+        //Database.EnsureDeleted();
         Database.EnsureCreated();
-
-        Users.Update(new User() { Login = "Admin", Password = "Admin" });
-        SaveChanges();
-
-        Participants.Update(new Participant() { FirstName = "Anton", UserId = 1, Email = "admin@gmail.com" });
-        SaveChanges();
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.ApplyConfiguration(new UserConfiguration());
+        //modelBuilder.ApplyConfiguration(new UserConfiguration());
         modelBuilder.ApplyConfiguration(new EventConfiguration());
         modelBuilder.ApplyConfiguration(new ParticipantConfiguration());
         modelBuilder.ApplyConfiguration(new RoleConfiguration());

@@ -10,9 +10,9 @@ public class EventRepository : Repository<Event>, IEventRepository
     {
     }
 
-    public async Task<Event?> GetByNameAsync(string name)
+    public async Task<Event?> GetByNameAsync(string title)
     {
-        return await _context.Events.FindAsync(name);
+        return await _context.Events.FirstOrDefaultAsync(ev => ev.Title == title);
     }
 
     public async Task<IEnumerable<Event>> GetAllByDateAsync(DateOnly date)
