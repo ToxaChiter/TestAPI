@@ -27,11 +27,20 @@ public class ParticipantController : ControllerBase
     }
 
     [HttpGet("GetParticipants")]
-    public async Task<IActionResult> GetAsync([FromQuery] PaginationParams paginationParams)
+    public async Task<IActionResult> GetAllAsync([FromQuery] PaginationParams paginationParams)
     {
         var participants = await _unitOfWork.Participants.GetAllAsync();
         var participantsDTO = _mapper.ProjectTo<ParticipantDTO>(participants.AsQueryable());
         var paginatedParticipantDTO = participantsDTO.Paginate(paginationParams.PageNumber, paginationParams.PageSize);
+        return Ok(paginatedParticipantDTO);
+    }
+
+    [HttpGet("GetParticipantsByEvent")]
+    public async Task<IActionResult> GetAllByEventAsync([FromQuery] PaginationParams paginationParams, [FromQuery] int eventId)
+    {
+        var participants = await _unitOfWork.Participants.GetAllFromEventAsync(eventId);
+        var participantsDTO = _mapper.ProjectTo<ParticipantDTO>(participants.AsQueryable());
+        var paginatedParticipantDTO = participantsDTO.AsQueryable().Paginate(paginationParams.PageNumber, paginationParams.PageSize);
         return Ok(paginatedParticipantDTO);
     }
 

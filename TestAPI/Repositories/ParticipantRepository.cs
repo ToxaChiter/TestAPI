@@ -13,10 +13,10 @@ public class ParticipantRepository : Repository<Participant>, IParticipantReposi
     {
     }
 
-    public async Task<IEnumerable<Participant>> GetAllFromEventAsync(Event @event)
+    public async Task<IEnumerable<Participant>> GetAllFromEventAsync(int eventId)
     {
         return await _context.Participants
-            .Where(p => p.Events.Contains(@event))
+            .Where(p => p.Events.Any(e => e.Id == eventId))
             .ToListAsync();
     }
 }
