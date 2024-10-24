@@ -71,7 +71,6 @@ public class Program
 
             options.User.RequireUniqueEmail = true;
         })
-            //.AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<EventDbContext>()
             .AddDefaultTokenProviders();
 
@@ -108,11 +107,6 @@ public class Program
         {
             app.UseSwagger();
             app.UseSwaggerUI();
-
-            app.UseExceptionHandler("/Error");
-            app.UseHsts();
-
-            app.UseMiddleware<ExceptionMiddleware>();
         }
         else
         {

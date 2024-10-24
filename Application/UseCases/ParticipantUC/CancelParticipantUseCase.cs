@@ -33,6 +33,6 @@ public class CancelParticipantUseCase
         }
 
         eventEntity.Participants.Remove(participant);
-        await _unitOfWork.Events.UpdateAsync(eventEntity); // // Is working fine?
+        await _unitOfWork.Events.UpdateAsync(eventEntity);
     }
 }
