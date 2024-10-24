@@ -1,4 +1,4 @@
-﻿namespace TestAPI.Repositories;
+﻿namespace Core.Interfaces;
 
 public interface IRepository<T> where T : class
 {

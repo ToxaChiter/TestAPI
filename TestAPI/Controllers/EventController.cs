@@ -148,9 +148,16 @@ public class EventController : ControllerBase
 
     [HttpDelete("DeleteEvent/{id}")]
     [Authorize(Roles = "Admin")]
-    public async Task<IActionResult> SetEventImageAsync(int id)
+    public async Task<IActionResult> SetEventImageAsync([FromBody] EventDTO eventDTO)
     {
-        var isRemoved = await _unitOfWork.Events.DeleteAsync(id);
+        var validationResult = await _validator.ValidateAsync(eventDTO);
+        if (!validationResult.IsValid)
+        {
+            return ValidationProblem();
+        }
+        var @event = _mapper.Map<Event>(eventDTO);
+
+        var isRemoved = await _unitOfWork.Events.DeleteAsync(@event);
 
         if (isRemoved)
         {

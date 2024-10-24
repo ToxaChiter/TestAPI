@@ -1,8 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
-using TestAPI.Database;
+﻿using Core.Interfaces;
+using Infrastructure.Data.Database;
+using Microsoft.EntityFrameworkCore;
 
-namespace TestAPI.Repositories;
+namespace Infrastructure.Data.Repositories;
 
 public class Repository<T> : IRepository<T> where T : class
 {
@@ -41,15 +41,9 @@ public class Repository<T> : IRepository<T> where T : class
 
     public async Task<bool> DeleteAsync(T entity)
     {
-        var entityDb = await _context.Set<T>().FindAsync(entity);
-        bool wasDeleted = false;
-
-        if (entityDb != null)
-        {
-            _context.Set<T>().Remove(entityDb);
-            var deleted = await _context.SaveChangesAsync();
-            wasDeleted = deleted > 0;
-        }
+        _context.Set<T>().Remove(entity);
+        var deleted = await _context.SaveChangesAsync();
+        var wasDeleted = deleted > 0;
 
         return wasDeleted;
     }
