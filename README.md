@@ -1,3 +1,5 @@
+[![Build and Test](https://github.com/ToxaChiter/TestAPI/actions/workflows/test.yml/badge.svg)](https://github.com/ToxaChiter/TestAPI/actions/workflows/test.yml)
+
 # Тестовое задание: Events Web-app
 
 ## Инструкция по запуску
