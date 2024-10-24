@@ -24,7 +24,7 @@ public class GetEventParticipantsUseCase
             throw new NotFoundException("Event not found.");
         }
 
-        var participantsDTO = _mapper.ProjectTo<ParticipantDTO>(eventEntity.Participants.AsQueryable()); // Is working fine?
+        var participantsDTO = _mapper.ProjectTo<ParticipantDTO>(eventEntity.Participants.AsQueryable());
 
         return participantsDTO; 
     }

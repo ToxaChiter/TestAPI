@@ -2,7 +2,6 @@
 using Core.Interfaces;
 using Infrastructure.Data.Database;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace Infrastructure.Data.Repositories;
 

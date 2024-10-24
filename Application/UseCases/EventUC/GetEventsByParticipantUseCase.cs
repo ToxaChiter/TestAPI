@@ -1,7 +1,5 @@
 ﻿using Application.DTOs;
 using AutoMapper;
-using Core.Entities;
-using Core.Exceptions;
 using Core.Interfaces;
 using FluentValidation;
 

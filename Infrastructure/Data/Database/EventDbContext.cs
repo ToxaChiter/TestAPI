@@ -13,7 +13,6 @@ public class EventDbContext : IdentityDbContext
 
     public EventDbContext(DbContextOptions<EventDbContext> options) : base(options)
     {
-        //Database.EnsureDeleted();
         Database.EnsureCreated();
     }
 
@@ -21,7 +20,6 @@ public class EventDbContext : IdentityDbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        //modelBuilder.ApplyConfiguration(new UserConfiguration());
         modelBuilder.ApplyConfiguration(new EventConfiguration());
         modelBuilder.ApplyConfiguration(new ParticipantConfiguration());
         modelBuilder.ApplyConfiguration(new RoleConfiguration());

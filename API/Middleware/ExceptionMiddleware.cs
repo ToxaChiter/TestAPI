@@ -1,5 +1,4 @@
 ﻿using Core.Exceptions;
-using FluentValidation;
 using Newtonsoft.Json;
 using System.Net;
 
@@ -30,7 +29,7 @@ public class ExceptionMiddleware
 
     private Task HandleExceptionAsync(HttpContext context, Exception ex)
     {
-        _logger.LogError(ex, ex.Message);
+        _logger.LogError(ex, "{message}", ex.Message);
 
         (HttpStatusCode Code, string Message) = ex switch
         {

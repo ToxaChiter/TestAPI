@@ -1,10 +1,6 @@
-﻿using Application.DTOs;
-using Application.Pagination;
+﻿using Application.Pagination;
 using Application.UseCases;
 using Application.UseCases.ParticipantUC;
-using AutoMapper;
-using Core.Interfaces;
-using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
