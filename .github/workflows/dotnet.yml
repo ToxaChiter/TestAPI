@@ -4,37 +4,25 @@
 name: Build and Create Release
 
 on:
-  workflow_dispatch:  
-
-permissions:
-  contents: write
+  push:
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10 
 
 jobs:
   build:
-
+    name: Create Release
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 8.0.x
-    - name: Restore dependencies
-      run: dotnet restore
-    - name: Build
-      run: dotnet build --no-restore
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
-    - name: Publish
-      run: dotnet publish -c Release -o ./publish
-      
+    - name: Checkout code
+      uses: actions/checkout@v2
     - name: Create release
       id: create_release
       uses: actions/create-release@v1
       with:
-        tag_name: 'v2.0.1'
-        release_name: 'Release v2.0.1'
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
         draft: false
         prerelease: false
         generate_release_notes: true
