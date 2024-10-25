@@ -10,10 +10,10 @@ using Core.Interfaces;
 using FluentValidation;
 using Infrastructure.Data.Database;
 using Infrastructure.Data.Repositories;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using System.Text;
 
 namespace API;
@@ -92,10 +92,9 @@ public class Program
         builder.Services.AddAuthorizationBuilder()
             .AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
 
-        builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
-        {
-            options.LoginPath = "/Login";
-        });
+        builder.Services.AddAuthentication(IdentityConstants.ApplicationScheme).AddCookie();
+
+        
 
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
@@ -123,6 +122,19 @@ public class Program
 
 
         app.MapControllers();
+
+        app.MapGet("/Account/Login", async (context) =>
+        {
+            context.Response.ContentType = "application/json";
+            context.Response.StatusCode = StatusCodes.Status403Forbidden;
+            var result = JsonConvert.SerializeObject(new
+            {
+                context.Response.StatusCode,
+                Message = "Forbidden",
+            });
+
+            await context.Response.WriteAsync(result);
+        });
 
         app.Run();
     }
